@@ -1,22 +1,555 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Restaurant Landing Page</title>
-
-  <!-- Google Fonts (similar to design) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@600&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Global reset and base styles */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
 
-  <link rel="stylesheet" href="style.css" />
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #222;
+      background: linear-gradient(90deg, #ffeaa7 0%, #ffc3a0 40%, #ff9a9e 70%, #fbc2eb 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* Header / Navigation */
+    .site-header {
+      position: relative;
+      background-color: #fd6456;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 4vw;
+      min-height: 54px;
+    }
+
+    .main-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 3rem;
+      flex: 1;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: #000;
+      font-family: "Playfair Display", serif;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      font-size: 1.1rem;
+      white-space: nowrap;
+    }
+
+    .menu-toggle {
+      display: none;
+      border: none;
+      background: transparent;
+      padding: 0.5rem;
+      cursor: pointer;
+      align-items: center;
+      z-index: 1001;
+      position: relative;
+    }
+
+    .menu-toggle svg {
+      width: 32px;
+      height: 32px;
+      fill: #000;
+    }
+
+    /* Hidden checkbox for menu toggle */
+    #menu-checkbox {
+      display: none;
+    }
+
+    /* Mobile menu overlay */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 80%;
+      max-width: 300px;
+      height: 100vh;
+      background-color: #fd6456;
+      z-index: 1000;
+      transition: right 0.3s ease;
+      padding: 5rem 2rem 2rem;
+      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #menu-checkbox:checked ~ .mobile-menu {
+      right: 0;
+    }
+
+    .mobile-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      pointer-events: none;
+    }
+
+    #menu-checkbox:checked ~ .mobile-menu-overlay {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+    }
+
+    .mobile-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .mobile-nav-link {
+      text-decoration: none;
+      color: #000;
+      font-family: "Playfair Display", serif;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      font-size: 1.2rem;
+      transition: transform 0.2s ease;
+    }
+
+    .mobile-nav-link:hover {
+      transform: translateX(5px);
+    }
+
+    .close-menu {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .close-menu svg {
+      width: 28px;
+      height: 28px;
+      fill: #000;
+    }
+
+    /* Prevent body scroll when menu is open */
+    #menu-checkbox:checked ~ * {
+      overflow: hidden;
+    }
+
+    /* Hero section */
+    .hero {
+      display: flex;
+      min-height: calc(100vh - 54px);
+      width: 100%;
+    }
+
+    .hero-text {
+      flex: 1 1 50%;
+      padding: 4.2rem 6vw 4.5rem 6vw;
+      background: linear-gradient(135deg, #ffeaa7 0%, #ffc3a0 40%, #fbd2d2 80%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero-title {
+      font-family: "Montserrat", sans-serif;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      color: #111;
+      text-transform: uppercase;
+      font-size: clamp(1.8rem, 3vw + 1rem, 3.2rem);
+      margin: 0 0 2rem;
+      line-height: 1.2;
+    }
+
+    .hero-paragraph {
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+      line-height: 1.75;
+      max-width: 36rem;
+      color: #333;
+      margin-bottom: 3rem;
+      margin-top: 2.5rem;
+    }
+
+    .primary-btn {
+      align-self: flex-start;
+      padding: 0.85rem 3.8rem;
+      background-color: #ff6f61;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      transition: background-color 0.3s ease;
+    }
+
+    .primary-btn:hover {
+      background-color: #ff5a4d;
+    }
+
+    .hero-image {
+      flex: 1 1 50%;
+      position: relative;
+      min-height: 400px;
+      max-height: calc(100vh - 54px);
+      overflow: hidden;
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    /* Showcase / Gallery section */
+    .showcase {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      padding: 5rem 7vw 6rem;
+      margin-top: 6rem;
+      margin-bottom: 7rem;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1.2rem;
+      max-width: 620px;
+      width: 100%;
+    }
+
+    .gallery-item {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .gallery-item.small {
+      height: 190px;
+    }
+
+    .gallery-item.tall {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      height: 390px;
+    }
+
+    .showcase-card {
+      background-color: #ff6f61;
+      padding: 2.5rem 2rem 2rem;
+      max-width: 520px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .card-label {
+      margin: 0 0 1.2rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #000;
+    }
+
+    .card-title {
+      font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-weight: 700;
+      margin: 0 0 2.5rem;
+      font-size: clamp(1.8rem, 1.4rem + 1.4vw, 2.6rem);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #000;
+      line-height: 1.3;
+    }
+
+    .card-line {
+      display: inline-block;
+    }
+
+    .card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: #000;
+      cursor: pointer;
+    }
+
+    .card-cta svg {
+      width: 20px;
+      height: 20px;
+      fill: #000;
+    }
+
+    /* Tablet styles */
+    @media (max-width: 1024px) {
+      .main-nav {
+        gap: 2rem;
+      }
+
+      .nav-link {
+        font-size: 0.95rem;
+        letter-spacing: 0.15em;
+      }
+
+      .hero-text {
+        padding: 3.5rem 5vw;
+      }
+
+      .showcase {
+        padding: 4rem 5vw 5rem;
+        gap: 2rem;
+      }
+    }
+
+    /* Small tablet / large mobile */
+    @media (max-width: 768px) {
+      .site-header {
+        padding: 0.8rem 5vw;
+      }
+
+      .main-nav {
+        gap: 1.5rem;
+      }
+
+      .nav-link {
+        font-size: 0.85rem;
+        letter-spacing: 0.12em;
+      }
+
+      .hero {
+        flex-direction: column;
+        min-height: auto;
+      }
+
+      .hero-text {
+        padding: 3rem 6vw;
+      }
+
+      .hero-image {
+        min-height: 350px;
+        max-height: 500px;
+      }
+
+      .hero-title {
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-paragraph {
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .showcase {
+        flex-direction: column;
+        padding: 3.5rem 6vw 4.5rem;
+        margin-top: 4rem;
+        margin-bottom: 4rem;
+      }
+
+      .gallery-grid {
+        max-width: 100%;
+      }
+
+      .showcase-card {
+        padding: 2.5rem 2rem;
+      }
+    }
+
+    /* Mobile styles */
+    @media (max-width: 600px) {
+      .main-nav {
+        display: none;
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+
+      .site-header {
+        justify-content: flex-end;
+        padding: 0.8rem 5vw;
+      }
+
+      .hero-text {
+        padding: 2.5rem 6vw 3rem;
+      }
+
+      .hero-image {
+        min-height: 300px;
+        max-height: 400px;
+      }
+
+      .hero-paragraph {
+        font-size: 0.92rem;
+        line-height: 1.65;
+      }
+
+      .primary-btn {
+        padding: 0.75rem 3rem;
+        font-size: 0.9rem;
+      }
+
+      .showcase {
+        padding: 3rem 5vw 3.5rem;
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+        gap: 2.5rem;
+      }
+
+      .gallery-grid {
+        gap: 1rem;
+      }
+
+      .gallery-item.small {
+        height: 150px;
+      }
+
+      .gallery-item.tall {
+        height: 310px;
+      }
+
+      .showcase-card {
+        padding: 2rem 1.5rem;
+      }
+
+      .card-title {
+        letter-spacing: 0.18em;
+        margin-bottom: 2rem;
+      }
+    }
+
+    /* Very small mobile */
+    @media (max-width: 400px) {
+      .hero-title {
+        font-size: 1.6rem;
+        letter-spacing: 0.15em;
+      }
+
+      .hero-paragraph {
+        font-size: 0.88rem;
+      }
+
+      .primary-btn {
+        padding: 0.7rem 2.5rem;
+      }
+
+      .gallery-item.small {
+        height: 130px;
+      }
+
+      .gallery-item.tall {
+        height: 270px;
+      }
+
+      .card-title {
+        font-size: 1.6rem;
+        letter-spacing: 0.15em;
+      }
+    }
+
+    /* Large desktop */
+    @media (min-width: 1400px) {
+      .hero-text {
+        padding: 5rem 8vw;
+      }
+
+      .showcase {
+        padding: 6rem 8vw 7rem;
+      }
+
+      .gallery-grid {
+        max-width: 700px;
+      }
+
+      .gallery-item.small {
+        height: 220px;
+      }
+
+      .gallery-item.tall {
+        height: 450px;
+      }
+    }
+
+    /* Hide mobile menu elements on desktop */
+    @media (min-width: 601px) {
+      .mobile-menu,
+      .mobile-menu-overlay,
+      #menu-checkbox {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <!-- Hidden checkbox for menu toggle -->
+  <input type="checkbox" id="menu-checkbox">
+  
+  <!-- Mobile menu overlay -->
+  <label for="menu-checkbox" class="mobile-menu-overlay"></label>
+  
+  <!-- Mobile menu -->
+  <div class="mobile-menu">
+    <label for="menu-checkbox" class="close-menu" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </label>
+    <nav class="mobile-nav">
+      <a href="#" class="mobile-nav-link">Home</a>
+      <a href="#" class="mobile-nav-link">Order</a>
+      <a href="#" class="mobile-nav-link">Food</a>
+      <a href="#" class="mobile-nav-link">Restaurant</a>
+      <a href="#" class="mobile-nav-link">Testimonials</a>
+      <a href="#" class="mobile-nav-link">Contact Us</a>
+    </nav>
+  </div>
+
   <header class="site-header">
     <nav class="main-nav">
       <a href="#" class="nav-link">Home</a>
@@ -26,13 +559,14 @@
       <a href="#" class="nav-link">Testimonials</a>
       <a href="#" class="nav-link">Contact Us</a>
     </nav>
-    <button class="menu-toggle" aria-label="Open menu">
-      <img src="menu.png" alt="Menu icon">
-    </button>
+    <label for="menu-checkbox" class="menu-toggle" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </label>
   </header>
 
   <main>
-    <!-- Hero Section -->
     <section class="hero">
       <div class="hero-text">
         <h1 class="hero-title">LOREM IPSUM</h1>
@@ -45,21 +579,20 @@
         <button class="primary-btn">Click Me</button>
       </div>
       <div class="hero-image">
-        <img src="burger.jpg" alt="Burger and fries">
+        <img src="images/burger.jpg" alt="Burger and fries">
       </div>
     </section>
 
-    <!-- Gallery / Secondary Section -->
     <section class="showcase">
       <div class="gallery-grid">
         <div class="gallery-item small">
-          <img src="night-sign.jpg" alt="Neon restaurant sign">
+          <img src="images/night-sign.jpg" alt="Neon restaurant sign">
         </div>
         <div class="gallery-item small">
-          <img src="street.jpg" alt="Outdoor restaurant street">
+          <img src="images/street.jpg" alt="Outdoor restaurant street">
         </div>
         <div class="gallery-item tall">
-          <img src="food-table.jpg" alt="Food on a table">
+          <img src="images/food-table.jpg" alt="Food on a table">
         </div>
       </div>
 
@@ -71,14 +604,10 @@
         </h2>
         <div class="card-cta">
           <span>Click</span>
-          <img src="arrow.png" alt="Arrow icon">
+          <img src="images/arrow.png" alt="Arrow icon">
         </div>
       </div>
     </section>
   </main>
 </body>
-
 </html>
-
-
-
