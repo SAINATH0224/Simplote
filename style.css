@@ -53,7 +53,7 @@ img {
 .menu-toggle {
   border: none;
   background: transparent;
-  padding-right: 0px;  
+  padding-right: 0;  
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -139,12 +139,10 @@ img {
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(0, 1fr));
-  gap: 1.6rem;
-  max-width: 500px; /* wider */
-  width: 100%;
-  height: 410px; /* a bit shorter to reduce vertical stretching */
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 1.2rem;
+  max-width: 620px;
 }
 
 .gallery-item {
@@ -157,23 +155,18 @@ img {
   object-fit: cover;
 }
 
+/* LEFT column: small images */
+.gallery-item.small {
+  height: 190px;
+}
+
+/* RIGHT column: tall image */
 .gallery-item.tall {
+  grid-column: 2;
   grid-row: 1 / span 2;
-  grid-column: 2 / 3;
-  height: 100%;
+  height: 390px;
 }
 
-.gallery-item.small:nth-child(1) {
-  grid-row: 1 / 2;
-  grid-column: 1 / 2;
-  height: 205px;
-}
-
-.gallery-item.small:nth-child(2) {
-  grid-row: 2 / 3;
-  grid-column: 1 / 2;
-  height: 192px;
-}
 
 .showcase-card {
   background-color: #ff6f61;
